@@ -13,28 +13,31 @@
        PROCEDURE DIVISION USING PASSED-OPERATION.
            MOVE PASSED-OPERATION TO OPERATION-TYPE
 
-           IF OPERATION-TYPE = 'TOTAL '
-               CALL 'DataProgram' USING 'READ', FINAL-BALANCE
-               DISPLAY "Current balance: " FINAL-BALANCE
+           EVALUATE OPERATION-TYPE
+               WHEN 'TOTAL '
+                   CALL 'DataProgram' USING 'READ', FINAL-BALANCE
+                   DISPLAY "Current balance: " FINAL-BALANCE
 
-           ELSE IF OPERATION-TYPE = 'CREDIT'
-               DISPLAY "Enter credit amount: "
-               ACCEPT AMOUNT
-               CALL 'DataProgram' USING 'READ', FINAL-BALANCE
-               ADD AMOUNT TO FINAL-BALANCE
-               CALL 'DataProgram' USING 'WRITE', FINAL-BALANCE
-               DISPLAY "Amount credited. New balance: " FINAL-BALANCE
-
-           ELSE IF OPERATION-TYPE = 'DEBIT '
-               DISPLAY "Enter debit amount: "
-               ACCEPT AMOUNT
-               CALL 'DataProgram' USING 'READ', FINAL-BALANCE
-               IF FINAL-BALANCE >= AMOUNT
-                   SUBTRACT AMOUNT FROM FINAL-BALANCE
+               WHEN 'CREDIT'
+                   DISPLAY "Enter credit amount: "
+                   ACCEPT AMOUNT
+                   CALL 'DataProgram' USING 'READ', FINAL-BALANCE
+                   ADD AMOUNT TO FINAL-BALANCE
                    CALL 'DataProgram' USING 'WRITE', FINAL-BALANCE
-                   DISPLAY "Amount debited. New balance: " FINAL-BALANCE
-               ELSE
-                   DISPLAY "Insufficient funds for this debit."
-               END-IF
-           END-IF
+                   DISPLAY "Amount credited. New balance: "
+      -            FINAL-BALANCE
+
+               WHEN 'DEBIT '
+                   DISPLAY "Enter debit amount: "
+                   ACCEPT AMOUNT
+                   CALL 'DataProgram' USING 'READ', FINAL-BALANCE
+                   IF FINAL-BALANCE >= AMOUNT
+                       SUBTRACT AMOUNT FROM FINAL-BALANCE
+                       CALL 'DataProgram' USING 'WRITE', FINAL-BALANCE
+                       DISPLAY "Amount debited. New balance: "
+      -                FINAL-BALANCE
+                   ELSE
+                       DISPLAY "Insufficient funds for this debit."
+                   END-IF
+           END-EVALUATE
            GOBACK.
